@@ -210,7 +210,7 @@ list_resources = {
     'sqs': list_sqs,
     'kinesisapp': list_kinesis_applications,
     'dynamodb': list_dynamodb,
-    'billing': list_billing
+    'billing': list_billing,
     'emr': list_emr,
 }
 
