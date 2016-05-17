@@ -1,0 +1,73 @@
+Auth:
+  region: "{{ region }}"
+Metrics:
+{% for emr in resources %}
+{% for metric_name in (
+    'AppsCompleted',
+    'AppsFailed',
+    'AppsKilled',
+    'AppsPending',
+    'AppsRunning',
+    'AppsSubmitted',
+    'CapacityRemainingGB',
+    'ContainerAllocated',
+    'ContainerPending',
+    'ContainerReserved',
+    'CoreNodesPending',
+    'CoreNodesRunning',
+    'CorruptBlocks',
+    'HDFSBytesRead',
+    'HDFSBytesWritten',
+    'IsIdle',
+    'MRActiveNodes',
+    'MRDecommissionedNodes',
+    'MRLostNodes',
+    'MRRebootedNodes',
+    'MRTotalNodes',
+    'MRUnhealthyNodes',
+    'MissingBlocks',
+    'PendingDeletionBlocks',
+    'S3BytesRead',
+    'S3BytesWritten',
+    'TotalLoad',
+    'UnderReplicatedBlocks',) %}
+- Namespace: "AWS/ElasticMapReduce"
+  MetricName: "{{ metric_name }}"
+  Statistics:
+  - "Average"
+  Unit: "Count"
+  Dimensions:
+    JobFlowId: {{ emr.id }}
+{% endfor %}
+
+{% for metric_name in (
+    'MemoryAllocatedMB',
+    'MemoryAvailableMB',
+    'MemoryReservedMB',
+    'MemoryTotalMB',) %}
+- Namespace: "AWS/ElasticMapReduce"
+  MetricName: "{{ metric_name }}"
+  Statistics:
+  - "Average"
+  Unit: "Kilobytes"
+  Dimensions:
+    JobFlowId: {{ emr.id }}
+{% endfor %}
+
+{% for metric_name in (
+    'LiveDataNodes',
+    'HDFSUtilization',) %}
+- Namespace: "AWS/ElasticMapReduce"
+  MetricName: "{{ metric_name }}"
+  Statistics:
+  - "Average"
+  Unit: "Percent"
+  Dimensions:
+    JobFlowId: {{ emr.id }}
+{% endfor %}
+{% endfor %}
+
+Options:
+  Count: 3
+  Period: 5
+  Formatter: 'cloudwatch.aws.emr.{{ region }}.%(dimension)s.%(MetricName)s.%(statistic)s.%(Unit)s'

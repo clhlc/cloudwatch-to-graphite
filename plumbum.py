@@ -35,6 +35,7 @@ import sys
 import boto
 import boto.dynamodb
 import boto.ec2
+import boto.emr
 import boto.ec2.elb
 import boto.ec2.cloudwatch
 import boto.rds
@@ -194,6 +195,12 @@ def list_dynamodb(region, filter_by_kwargs):
     return lookup(tables, filter_by=filter_by_kwargs)
 
 
+def list_emr(region, filter_by_kwargs):
+    conn = boto.emr.connect_to_region(region)
+    q_list = conn.list_clusters(cluster_states=['WAITING', 'RUNNING'])
+    queues = q_list.clusters
+    return lookup(queues, filter_by=filter_by_kwargs)
+
 list_resources = {
     'ec2': list_ec2,
     'elb': list_elb,
@@ -204,6 +211,7 @@ list_resources = {
     'kinesisapp': list_kinesis_applications,
     'dynamodb': list_dynamodb,
     'billing': list_billing
+    'emr': list_emr,
 }
 
 
